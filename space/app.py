@@ -19,7 +19,7 @@ models = {}
 
 def get_model(name):
     if name not in models:
-        models[name] = keras.saving.load_model(f"bin/{name}.keras")
+        models[name] = keras.saving.load_model(f"/models/{name}.keras")
     return models[name]
 
 def model_predict(model, file_a, file_b):
