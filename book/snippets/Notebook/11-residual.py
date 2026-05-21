@@ -4,7 +4,8 @@ class ResidualBlock2D(layers.Layer):
     super().__init__(**kwargs)
     self.filters = filters
     self.kernel_size = kernel_size
-    self.strides = strides
+    # Correct deserialization
+    self.strides = tuple(strides) if isinstance(strides, list) else strides
 
     self.conv1 = layers.Conv2D(filters, kernel_size, strides=strides, padding="same")
     self.bn1 = layers.BatchNormalization()
