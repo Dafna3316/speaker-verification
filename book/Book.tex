@@ -94,10 +94,6 @@ backend=biber]{biblatex}
 \DeclareDelimFormat{nameyeardelim}{\addcomma\space}
 \addbibresource{bibliography.bib}
 
-% \providecommand\cite[1]{}
-% \providecommand\parencite[1]{}
-% \providecommand\textcite[1]{}
-
 \NewDocumentCommand\encite{O{} O{} m}{\textenglish{\cite[#1][#2]{#3}}}
 \NewDocumentCommand\enpcite{O{} O{} m}{\mbox{\textenglish{\parencite[#1][#2]{#3}}}}
 \NewDocumentCommand\entcite{O{} O{} m}{\textenglish{\textcite[#1][#2]{#3}}}
@@ -1857,24 +1853,5 @@ LibriSpeech, עיבוד מקדים וחיתוך אקראי, יצירת אובי�
 \label{sec:code-spect2d}
 
 \inputminted{python}{snippets/Notebook/16-spect2d.py}
-
-\iffalse
-\section{מימוש לדוגמה של גזירה אוטומטית בפייתון}
-\label{sec:autodiff-impl}
-
-כפי שראינו ב\autoref{sec:optimization}, גזירה אוטומטית היא השיטה
-הנפוצה ביותר לחישוב הנגזרות החלקיות של פונקציית ההפסד. בנספח הזה נציג
-מימוש לדוגמה של השיטה.
-
-\subsection{גזירה אוטומטית קדמית}
-\label{sec:fautodiff-impl}
-
-בגזירה אוטומטית קדמית, כל ערך שומר איתו גם נגזרת. נתחיל בהגדרת הטיפוס.
-ערך קבוע, שלא תלוי בשום דבר, שקול למשתנה עם משיק~$0$.
-\inputminted[mathescape]{python}{snippets/fautodiff/Variable.py}
-
-בשביל לגזור פונקציה נתונה, נמיר את הארגומנטים הרצויים שלה ל-\mintinline{py}|Variable| ונריץ אותה.
-\inputminted[mathescape]{python}{snippets/fautodiff/Diff.py}
-\fi
 
 \end{document}
