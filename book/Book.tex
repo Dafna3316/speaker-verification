@@ -1389,6 +1389,16 @@ $\SI{45}{\mega\byte}$).
 \section{תוצאות והדגמות}
 \label{sec:results}
 
+\begin{center}
+  \begin{tabular}{ccc}
+    מודל & AUC & EER \\\hline
+    חד-ממדי על אודיו גולמי & $\num{0.926}$ & $\SI{14.31}{\percent}$ \\
+    חד-ממדי על ספקטרוגרמה & $\num{0.933}$ & $\SI{13.28}{\percent}$ \\
+    דו-ממדי מבוסס MobileNetV2 & $\num{0.903}$ & $\SI{17.18}{\percent}$ \\
+    דו-ממדי מקורי & $\num{0.933}$ & $\SI{13.57}{\percent}$
+  \end{tabular}
+\end{center}
+
 \begin{figure}
   \centering
   \includegraphics[width=0.65\textwidth]{images/audio_cnn-roc.png}
