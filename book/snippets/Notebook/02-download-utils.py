@@ -13,7 +13,7 @@ sample_rate = 16000 # DON'T CHANGE
 import shutil
 for requirement in ["curl", "tar", "grep", "ffmpeg"]:
   if not shutil.which(requirement):
-    raise f"Dependency {requirement} not found!"
+    raise RuntimeError(f"Dependency {requirement} not found!")
 
 def ensure_set(name: str):
   """Ensures that a split of LibriSpeech is available."""

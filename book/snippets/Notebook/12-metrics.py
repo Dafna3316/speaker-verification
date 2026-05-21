@@ -25,12 +25,12 @@ def evaluate_accuracy(model, dual_ds):
   dists = np.array(dists)
 
   # scikit-learn wants higher -> more similar, which is the opposite
-  # of our sytsem.
+  # of our system.
   similarities = -dists
 
   # This gives us the FPR (=FAR) and TPR (=1-FRR) for various thresholds
   fpr, tpr, thresholds = roc_curve(y_true, similarities)
-  # Coutn the area under the curve
+  # Count the area under the curve
   roc_auc = roc_auc_score(y_true, similarities)
 
   # FNR (=FRR)

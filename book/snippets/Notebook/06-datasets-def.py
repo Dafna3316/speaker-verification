@@ -1,7 +1,7 @@
 # Hyperparameters
 batch_size = 32
 length_seconds = 2
-seed = 1337 # Reproduciblity
+seed = 1337 # Reproducibility
 
 train_ds = triple_ds(
   Path(data_dir).joinpath(train_name),
