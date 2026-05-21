@@ -205,7 +205,17 @@ backend=biber]{biblatex}
 \tableofcontents
 \newpage
 
-\section{מבוא ותקציר}
+\begin{abstract}
+  הפרויקט הזה מציג מערכת לאימות דובר באמצעות למידה עמוקה. המערכת מקבלת
+  שתי הקלטות דיבור קצרות ומשיבה האם הן הוקלטו ע״י אותו הדובר. פותחו
+  ארבעה מודלי קונבולוציה, וכולם אומנו על מערך הנתונים LibriSpeech עם
+  חיתוך אקראי בעזרת triplet~loss ו-Adam. המודלים הוערכו באמצעות
+  \textenglish{EER}, \textenglish{AUC} ו-\textenglish{minDCF} והגיעו
+  עד לביצועים של $\SI{13.23}{\percent}$, $\num{0.995}$,
+  ו-$\num{0.924}$ בהתאמה. הפרויקט משווה בין ארבע ארכיטקטורות שונות.
+\end{abstract}
+
+\section{מבוא}
 \label{sec:introduction}
 
 רבים המקרים בחיינו הדיגיטליים בהם צריך לאמת את~זהותו של~אדם מסוים,
@@ -223,12 +233,10 @@ backend=biber]{biblatex}
 מצוין לשמור על~המבנה המרחבי של~הקלט. אחת ממטרות הפרויקט היא להשוות בין
 הארכיטקטורות השונות ולראות איזו מהן היא המתאימה ביותר למשימה.
 
-כל המודלים אומנו באותה גישה, של למידה ניגודית (contrastive learning)
-באמצעות triplet loss \enpcite{facenet}. זו השיטה המוצלחת ביותר
-בניסיונות, ומגיעה להישגים של כ-$\SI{85}{\percent}$ דיוק על מערך
-הנתונים המוגבל שהמודלים אומנו עליו (ראו \autoref{sec:dataset}).
-
-ניתן לראות הדגמה בקישור: \url{https://youtu.be/AYGZdd3KZk0}.
+כל המודלים אומנו על מערך הנתונים LibriSpeech (\autoref{sec:dataset})
+באותה גישה, של למידה ניגודית (contrastive learning) באמצעות triplet
+loss \enpcite{facenet}. ניתן לראות הדגמה בקישור:
+\url{https://youtu.be/AYGZdd3KZk0}.
 
 \subsection{פתרונות קיימים}
 \label{sec:prior-art}
