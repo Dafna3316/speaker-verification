@@ -94,8 +94,10 @@ extras sectioning tabular, provide={onchar=ids fonts, alph=letters.plain, Alph=l
 \NewDocumentCommand\enpcite{m}{\textenglish{\parencite{#1}}}
 \NewDocumentCommand\entcite{m}{\textenglish{\textcite{#1}}}
 
+\NewDocumentCommand\autorefpage{m}{\autoref{#1} \onpagename~\pageref{#1}}
+
 \let\oldinputminted\inputminted
-\RenewDocumentCommand\inputminted{o m m}{\begin{otherlanguage}{english}\oldinputminted[\IfNoValueF{#1}{#1}]{#2}{#3}\end{otherlanguage}}
+\RenewDocumentCommand\inputminted{o m m}{\begin{otherlanguage}{english}\oldinputminted[\IfValueT{#1}{#1}]{#2}{#3}\end{otherlanguage}}
 
 %% Definitions
 \theoremstyle{plain}
@@ -132,6 +134,7 @@ extras sectioning tabular, provide={onchar=ids fonts, alph=letters.plain, Alph=l
 \setlocalecaption{hebrew}{subsectionautoref}{תת־פרק}
 \setlocalecaption{hebrew}{subsubsectionautoref}{סעיף}
 \setlocalecaption{hebrew}{appendixautoref}{נספח}
+\setlocalecaption{hebrew}{onpage}{בעמוד}
 
 \andautoref{hebrew}{theorem}{משפט}
 \andautoref{hebrew}{definition}{הגדרה}
@@ -1310,6 +1313,25 @@ $\SI{347.59}{\mebi\byte}$ וה-test הוא $\SI{355.36}{\mebi\byte}$. מכאן
 
 \section{גרפים וטבלאות}
 \label{sec:graphs}
+
+\iffalse
+\section{מימוש לדוגמה של גזירה אוטומטית בפייתון}
+\label{sec:autodiff-impl}
+
+כפי שראינו ב\autoref{sec:optimization}, גזירה אוטומטית היא השיטה
+הנפוצה ביותר לחישוב הנגזרות החלקיות של פונקצית ההפסד. בנספח הזה נציג
+מימוש לדוגמה של השיטה.
+
+\subsection{גזירה אוטומטית קדמית}
+\label{sec:fautodiff-impl}
+
+בגזירה אוטומטית קדמית, כל ערך שומר איתו גם נגזרת. נתחיל בהגדרת הטיפוס.
+ערך קבוע, שלא תלוי בשום דבר, שקול למשתנה עם משיק~$0$.
+\inputminted[mathescape]{python}{snippets/fautodiff/Variable.py}
+
+בשביל לגזור פונקציה נתונה, נמיר את הארגומנטים הרצויים שלה ל-\mintinline{py}|Variable| ונריץ אותה.
+\inputminted[mathescape]{python}{snippets/fautodiff/Diff.py}
+\fi
 
 % \begin{otherlanguage}{english}
 %   \printbibliography[heading=bibintoc,title={מקורות}]
