@@ -1,0 +1,8 @@
+numpy
+tensorflow<2.17
+tensorflow-io<0.38
+tensorflow-metal<1.2
+matplotlib
+importlib_resources
+ipywidgets
+pydub
