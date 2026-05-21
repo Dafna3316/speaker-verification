@@ -69,3 +69,70 @@ def calculate_min_dcf(fpr, tpr, p_tar=0.01, c_miss=1.0, c_fa=1.0):
   mindcf_normalized = min_dcf / c_default
   print(f"minDCF: {mindcf_normalized:.4f}")
   return mindcf_normalized
+
+def evaluate_on_set(model, ds, margin, batch_limit=None):
+  results = {
+    "tp": [], # True positives
+    "tn": [], # True negatives
+    "fp": [], # False positives
+    "fn": [], # False negatives
+  }
+
+  for idx, ((file_a, file_b), labels) in enumerate(ds):
+    emb_a = model.predict(file_a, verbose=0)
+    emb_b = model.predict(file_b, verbose=0)
+    dists = np.sqrt(np.sum(np.square(emb_a - emb_b), axis=1))
+    labels = labels.numpy()
+
+    for i in range(len(labels)):
+      dist = dists[i]
+      y_true = labels[i]
+      y_pred = 1 if dist < margin else 0
+
+      # Retrieve raw audio data
+      audio_a = file_a[i].numpy()
+      audio_b = file_b[i].numpy()
+
+      record = {
+        "a": audio_a,
+        "b": audio_b,
+        "distance": dist,
+        "margin": margin
+      }
+
+      if y_true == 1 and y_pred == 1:
+        results["tp"].append(record)
+      elif y_true == 0 and y_pred == 0:
+        results["tn"].append(record)
+      elif y_true == 0 and y_pred == 1:
+        results["fp"].append(record)
+      elif y_true == 1 and y_pred == 0:
+        results["fn"].append(record)
+
+    if batch_limit is not None and idx >= batch_limit:
+      break
+
+  return results
+
+# Output examples of wrongly classified pairs
+def confusion_analysis(model, ds, margin, batch_limit=None):
+  results = evaluate_on_set(model, ds, margin, batch_limit)
+
+  if len(results["fp"]) > 0:
+    samples = random.sample(results["fp"], 3)
+    print("FALSE POSITIVES")
+    for example in samples:
+      print("A:")
+      display(Audio(example["a"], rate=sample_rate))
+      print("B:")
+      display(Audio(example["b"], rate=sample_rate))
+  if len(results["fn"]) > 0:
+    samples = random.sample(results["fn"], 3)
+    print("FALSE NEGATIVES")
+    for example in samples:
+      print("A:")
+      display(Audio(example["a"], rate=sample_rate))
+      print("B:")
+      display(Audio(example["b"], rate=sample_rate))
+
+  return results
