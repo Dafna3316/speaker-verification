@@ -1,0 +1,225 @@
+\DocumentMetadata{lang=he}
+\documentclass[a4paper]{article}
+
+\usepackage[hebrew, bidi=basic, layout=counters lists footnotes captions
+extras sectioning.tabular, provide={onchar=ids fonts, alph=letters.plain, Alph=letters}]{babel}
+\babelprovide[onchar=fonts letters]{english}
+
+\directlua{
+  luaotfload.add_fallback("hebrewrm", {
+    "David CLM:mode=harf",
+    "Hadasim CLM:mode=harf",
+    "Liberation Serif:mode=harf",
+  })
+}
+
+\babelfont[hebrew, Ligatures=TeX]{rm}[RawFeature={fallback=hebrewrm}]{David CLM}
+\babelfont[hebrew, Ligatures=TeX]{sf}{Nachlieli CLM}
+\babelfont[hebrew]{tt}{Liberation Mono}
+
+\usepackage{enumitem}
+\usepackage{graphicx}
+\usepackage[colorlinks]{hyperref}
+
+\NewDocumentCommand\downloadfile{m m}{%
+  \IfFileExists{#1}{}{\directlua{
+      os.execute([[mkdir -p "$(dirname #1)"]])
+      os.execute([[curl -Lo #1 #2]])
+  }}%
+}
+
+\setlocalecaption{hebrew}{figureautoref}{איור}
+\setlocalecaption{hebrew}{sectionautoref}{חלק}
+
+\title{דו״ח פרויקט: זיהוי קול}
+\author{יונתן דפנא}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+  נראה לי שלא באמת צריך תקציר.
+\end{abstract}
+
+\section{מטרת הפרויקט (מה הפרויקט עושה?)}
+\label{sec:whatisit}
+
+המטרה היא אותה המטרה כמו באבן דרך 1: לבנות מערכת שיודעת (באמצעות
+contrastive learning) להבחין אם שתי הקלטות קול קצרות הוקלטו ע״י אותו
+דובר.
+
+האפליקציה הסופית יכולה לתחזק מסד נתונים של דוברים ידועים, ולהשוות
+הקלטות חדשות אליהם, אבל זה לא חובה. העיקר הוא להשוות בין שתי הקלטות
+נתונות.
+
+\section{מקור הנתונים}
+\label{sec:dataset}
+
+החלטתי להשתמש ב-\href{https://www.openslr.org/12}{LibriSpeech} כמקור
+נתונים. ניתן לקרוא עליו כאן:
+\url{https://www.danielpovey.com/files/2015_icassp_librispeech.pdf}.
+
+הנתונים כבר מחולקים מראש ל-train, dev ו-test, אז אפשר פשוט להשתמש
+בחלוקה הקיימת. תוך כדי פיתוח (ובשביל איטרציה מהירה יותר) אפשר לפתח על
+החלוקות שנחשבות ”clean” (אודיו ללא הפרעות), כי הן קטנות יותר, ובסופו
+של דבר לרוץ על כל הנתונים.
+
+LibriSpeech מבוסס על \href{https://librivox.org/}{LibriVox}, פרויקט
+להקלטת ספרים בחינם, ומחלק כל פרק למספר קטעים קצרים (כל אחד כמה מילים).
+על כן, הוא נתון בהיררכיה של דובר-פרק-הקלטה (ובא עם קבצי CSV שמתאימים
+כל פרק לשמו ולספר).
+
+בפרויקט הזה אין צורך להתחשב בפרק או בספר, דרושות רק הקלטות קצרות. על
+כן שגרת הורדת הנתונים בקוד שלי משטחת לחלוטין את היררכית הפרקים.
+
+\section{מודלים}
+\label{sec:models}
+
+יש שלושה רעיונות כלליים למימוש הפרויקט, ולכל אחד מהם מתאים מודל אחד או
+יותר. לכולם אותו מבנה ברמת המאקרו: חזרה על התבנית
+קונבולוציה-נורמליזציה-MaxPool עם כמה שכבות Dense בסוף, שפולטת וקטור
+embedding באורך מסוים שניתן להשוות עם וקטורים אחרים.
+
+\subsection{רשת קונבולוציה חד-ממדית על אודיו}
+\label{sec:raw1d}
+
+הרעיון כאן הוא לקחת את המידע בקבצי האודיו כמו שהוא (ניתן לחשוב עליו
+כצורת גל של ממש, ראו \autoref{fig:waveform}), ומאחר שהוא קיים במימד
+אחד (הזמן), להעביר אותו דרך מספר שכבות קונבולוציה חד-ממדיות וכמה שכבות
+FC בסוף. המודל הזה \emph{לא כולל} ביצוע DFT. ניתן לדמיין את המודל כפס
+אנכי שעובר על גבי צורת הגל.
+
+\begin{figure}
+  \centering
+  \downloadfile{images/waveform.png}{https://forum.audacityteam.org/uploads/default/original/3X/8/1/816771cc4529dce39976d77c4150a05947a61e83.png}
+  \includegraphics[scale=0.2]{images/waveform.png}
+  \caption{צורת גל}
+  \label{fig:waveform}
+\end{figure}
+
+\subsection{רשת קונבולוציה חד-ממדית על ספקטרוגרמה}
+\label{sec:dft1d}
+
+כאן מבצעים סוג של DFT (למעשה יוצרים Mel Spectrogram) שממיר את נתוני
+האודיו ממימד אחד, לחץ אוויר מול \emph{זמן}, לשני מימדים, אמפליטודה מול
+\emph{זמן ותדר} (\autoref{fig:spectrogram}). האינטואיציה היא שההבדלים
+בצורת \href{https://en.wikipedia.org/wiki/Vocal_tract}{מערכת הקול} של
+בני אדם שונים משפיעים על תדרים באופן יותר ישיר מעל צורת הגל.
+
+הספקטרוגרמה היא דו-ממדית, אבל המודל הזה עדיין מבצע קונבולוציה
+חד-ממדית. הרעיון הגדול מאחורי רשתות הקונבולוציה הוא שהקונבולוציה
+מסייעת לשמור על המבנה המרחבי של הפרמטרים ובכך מובילה להפקת לקחים טובה
+יותר. ואמנם תדירויות קרובות (הממד השני שהוספנו) באמת נשמעות לאוזנינו
+קרובות, אבל, בהתייחסות לתדרים, הגורם שהכי משפיע על
+\href{https://he.wikipedia.org/wiki/גוון_(מוזיקה)}{גוון הקול} הוא
+דווקא היחס בין ה\emph{אוברטונים} (או \emph{הרמוניות}), שיכולים להיות
+די רחוקים אחד מן השני בתדר.
+
+על כן עדיין נבצע קונבולוציה חד-ממדית (רצה במימד הזמן), על מנת ”לראות”
+את כל תחום התדרים ביחד. יש לציין שהלקחים האמיתיים מופקים רק מניסיון
+ובדיקה (ראו \autoref{sec:performance}), ולכן הפרויקט בודק מספר מודלים
+שונים.
+
+\subsection{רשת קונבולוציה דו-ממדית על ספקטרוגרמה}
+\label{sec:dft2d}
+
+הרעיון דומה למודל הקודם, אבל כאן רשת הקונבולוציה היא דו-ממדית כפי
+שנהוג ב-Machine Vision. אין הרבה מה לחדש על רשתות קונבולוציה דו-ממדיות
+לסיווג/אימות, זה נושא שנחקר כבר רבות. בפרויקט הזה ממומשים שלושה מודלים
+ע״פ הרעיון הזה: רשת קונבולוציה חדשה לחלוטין, רשת קיימת
+(\href{https://arxiv.org/abs/1704.04861}{MobileNet}) מאומנת מחדש על
+ספקטרוגרמות, ורשת מאומנת מראש (MobileNet על
+\href{https://doi.org/10.1167\%2F9.8.1037}{ImageNet}) עם Transfer
+Learning.
+
+\begin{figure}
+  \centering
+  \downloadfile{images/spectrogram.png}{https://upload.wikimedia.org/wikipedia/commons/c/c5/Spectrogram-19thC.png}
+  \includegraphics[scale=0.4]{images/spectrogram.png}
+  \caption{דוגמה לספקטרוגרמה}
+  \label{fig:spectrogram}
+\end{figure}
+
+\section{הסבר קוד}
+\label{sec:code}
+
+את הקוד ניתן לראות בקישור:
+\url{https://github.com/Dafna3316/speaker-identification} (כולל קוד
+המקור של הדו״ח הזה!).
+אציין בחלק הזה שהרצת הקוד דורשת את התוכנות והחבילות הבאות:
+\begin{itemize}
+\item פייתון מעל 3.11
+\item Tensorflow (גרסה 2.17 על macOS, או כל גרסה חדשה יותר על מערכות אחרות)
+\item על \foreignlanguage{english}{macOS}: \foreignlanguage{english}{\texttt{tensorflow-metal}}
+\item \texttt{ipywidgets} ו-\texttt{jupyterlab}
+\item מערכת מבוססת UNIX® או דמוית UNIX®, כגון macOS או GNU, הכוללת: \texttt{tar}, \texttt{grep} ו-\texttt{gunzip}
+\item cURL
+\item FFmpeg
+\end{itemize}
+
+המחשב שהשתמשתי בו להריץ את הקוד הוא Mac mini 2024 עם M4, שיש לו 10
+ליבות CPU ו-10 ליבות GPU, עם זיכרון משותף ביניהם. במעבד יש גם רכיב
+מיוחד להרצת רשתות נוירונים, ה-\foreignlanguage{english}{Neural Engine
+  (NE)}, אבל הוא מיועד ל-Inference ולכן לא עוזר באימון.
+
+\subsection{הורדת נתונים}
+\label{sec:code-dataset}
+
+החלק הראשון בקוד אחראי להוריד ולעבד את הנתונים לפורמט ש-Tensorflow
+יודע לעבוד איתו. בהתחלה מוגדרים כמה משתנים שקובעים אילו נתונים מתוך
+LibriSpeech יש להוריד, אחר כך מחלצים את הקבצים, ולבסוף בונים את אוביקט
+ה-\texttt{Dataset}.
+
+\subsubsection{מילה על פורמט אודיו}
+\label{sec:wav}
+
+הקבצים ב-LibriSpeech נתונים בפורמט FLAC, אותו Tensorflow לא יודעת
+לקרוא. קיימת חבילה \texttt{tensorflow-io} שתומכת בקריאת הפורמט הזה
+(והרבה אחרים) וגם בכל מיני טרנספורמציות על אודיו, אבל היא לא עובדת על
+macOS/ARM (נכשלת עם שגיאות).
+
+הנושא הזה גרם לי הרבה כאב ראש; בהתחלה רציתי להוריד את הנתונים
+מ-\href{https://www.tensorflow.org/datasets/catalog/librispeech}{TFDS},
+אבל ההורדה לקחה יותר מדי זמן. שימוש ב-\texttt{tensorflow-io} קיצר את
+ההורדה אבל לא הצליח לפתוח את הקבצים, ובסופו של דבר נאלצתי להוריד את
+הנתונים ידנית ולהמיר אותם לפורמט WAV.
+
+\subsubsection{הפונקציה \texttt{ensure\_set}}
+\label{sec:code-ensure_set}
+
+הפונקציה הזו מורידה קובץ מכווץ יחיד מתוך LibriSpeech ומחלצת אותו. היא
+משתמש בפקודות מערכת UNIX ולכן לא תעבוד על Windows.
+
+בקבצים המסופקים ע״י LibriSpeech, כל תיקיית דובר מכילה תיקיות פרקים.
+הפונקציה הזו דואגת גם לחלץ את כל הקבצים של אותו דובר לתיקייה אחת,
+ולהמיר אותם לפורמט WAV.
+
+\subsubsection{בניית ה-\texttt{Dataset}}
+\label{sec:code-dataset-obj}
+
+הפונקציה \texttt{ds\_for\_siamese\_network} יוצרת \texttt{Dataset}
+שמורכב מזוגות חיוביים ושליליים, ומתאים להעביר דרך רשת סיאמית.
+
+היא בוחרת רק את הדוברים שיש להם יותר משתי הקלטות, ומייצרת את כל הזוגות
+האפשריים של הקלטות (ומערבבת). כמות ההקלטות מוגבלת ע״י פרמטר. לכל זוג
+חיובי כזה, הפונקציה מייצרת גם זוג שלילי (זוג של הקלטה מאותו דובר
+והקלטה מדובר אחר), וחותכת/מרפדת את כל ההקלטות לאורך הנתון (כרגע שתי
+שניות).
+
+ככה נבנים הנתונים עבור train, test ו-dev.
+
+\section{הערכת ביצועים}
+\label{sec:performance}
+
+\section{ממשק למשתמש}
+\label{sec:app}
+
+
+\section{אפשרויות לשיפור}
+\label{sec:improvements}
+
+הצעד הבא שאני מתכנן הוא לנסות להדר את \texttt{tensorflow-io} על המחשב.
+אם אצליח, זה יאפשר לי להשתמש בהרבה יותר נתונים (להמיר את הכול ל-WAV
+לוקח זמן) וכך לשפר את ביצועי כל המודלים.
+
+\end{document}
