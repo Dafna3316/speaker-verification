@@ -70,7 +70,7 @@ def calculate_min_dcf(fpr, tpr, p_tar=0.01, c_miss=1.0, c_fa=1.0):
   print(f"minDCF: {mindcf_normalized:.4f}")
   return mindcf_normalized
 
-def evaluate_on_set(model, ds, margin, batch_limit=None):
+def evaluate_on_set(model, ds, threshold, batch_limit=None):
   results = {
     "tp": [], # True positives
     "tn": [], # True negatives
@@ -87,7 +87,7 @@ def evaluate_on_set(model, ds, margin, batch_limit=None):
     for i in range(len(labels)):
       dist = dists[i]
       y_true = labels[i]
-      y_pred = 1 if dist < margin else 0
+      y_pred = 1 if dist < threshold else 0
 
       # Retrieve raw audio data
       audio_a = file_a[i].numpy()
@@ -97,7 +97,7 @@ def evaluate_on_set(model, ds, margin, batch_limit=None):
         "a": audio_a,
         "b": audio_b,
         "distance": dist,
-        "margin": margin
+        "threshold": threshold
       }
 
       if y_true == 1 and y_pred == 1:
@@ -115,8 +115,8 @@ def evaluate_on_set(model, ds, margin, batch_limit=None):
   return results
 
 # Output examples of wrongly classified pairs
-def confusion_analysis(model, ds, margin, batch_limit=None):
-  results = evaluate_on_set(model, ds, margin, batch_limit)
+def confusion_analysis(model, ds, threshold, batch_limit=None):
+  results = evaluate_on_set(model, ds, threshold, batch_limit)
 
   if len(results["fp"]) > 0:
     samples = random.sample(results["fp"], 3)

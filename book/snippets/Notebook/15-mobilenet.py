@@ -33,7 +33,7 @@ history = siamese_mobilenet.fit(
 
 # Metrics
 plot_history(history)
-eer, auc_score, optimal_margin, (fpr, tpr) = evaluate_accuracy(mobilenet, dev_dual_ds)
+eer, auc_score, optimal_threshold, (fpr, tpr) = evaluate_accuracy(mobilenet, dev_dual_ds)
 plot_roc_curve(fpr, tpr, auc_score)
 
 # Saving
@@ -42,7 +42,7 @@ display(FileLink("mobilenet.keras"))
 
 # On test set
 mobilenet = keras.saving.load_model("mobilenet.keras")
-eer, auc_score, optimal_margin, (fpr, tpr) = evaluate_accuracy(mobilenet, test_dual_ds)
+eer, auc_score, optimal_threshold, (fpr, tpr) = evaluate_accuracy(mobilenet, test_dual_ds)
 mindcf = calculate_min_dcf(fpr, tpr)
 plot_roc_curve(fpr, tpr, auc_score)
-_ = confusion_analysis(mobilenet, test_dual_ds, optimal_margin, 1)
+_ = confusion_analysis(mobilenet, test_dual_ds, optimal_threshold, 1)

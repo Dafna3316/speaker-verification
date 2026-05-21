@@ -13,7 +13,7 @@ def siamese_from_model(model, input_shape):
   return keras.Model(inputs=[anchor_input, positive_input, negative_input],
                      outputs=output, name="siamese_" + model.name)
 
-def final_predictor_from_model(model, input_shape, margin):
+def final_predictor_from_model(model, input_shape, threshold):
   input_a = layers.Input(shape=input_shape, name="a")
   input_b = layers.Input(shape=input_shape, name="b")
 
@@ -21,7 +21,7 @@ def final_predictor_from_model(model, input_shape, margin):
   embedding_b = model(input_b)
 
   dist = ops.sqrt(ops.sum(ops.square(embedding_a - embedding_b), axis=1))
-  prediction = (dist < margin).cast("float32")
+  prediction = (dist < threshold).cast("float32")
 
   return keras.Model(inputs=[input_a, input_b],
                      outputs=prediction, name="predictor_" + model.name)

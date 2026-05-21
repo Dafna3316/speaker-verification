@@ -38,7 +38,7 @@ history = siamese_spect_2d.fit(
 
 # Metrics
 plot_history(history)
-eer, auc_score, optimal_margin, (fpr, tpr) = evaluate_accuracy(spect_2d, dev_dual_ds)
+eer, auc_score, optimal_threshold, (fpr, tpr) = evaluate_accuracy(spect_2d, dev_dual_ds)
 plot_roc_curve(fpr, tpr, auc_score)
 
 # Saving
@@ -47,7 +47,7 @@ display(FileLink("spect_2d.keras"))
 
 # On test set
 spect_2d = keras.saving.load_model("spect_2d.keras")
-eer, auc_score, optimal_margin, (fpr, tpr) = evaluate_accuracy(spect_2d, test_dual_ds)
+eer, auc_score, optimal_threshold, (fpr, tpr) = evaluate_accuracy(spect_2d, test_dual_ds)
 mindcf = calculate_min_dcf(fpr, tpr)
 plot_roc_curve(fpr, tpr, auc_score)
-_ = confusion_analysis(spect_2d, test_dual_ds, optimal_margin, 1)
+_ = confusion_analysis(spect_2d, test_dual_ds, optimal_threshold, 1)

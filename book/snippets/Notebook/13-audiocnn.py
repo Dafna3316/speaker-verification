@@ -40,7 +40,7 @@ history = siamese_audio_cnn.fit(
 
 # History and metrics
 plot_history(history)
-eer, auc_score, optimal_margin, (fpr, tpr) = evaluate_accuracy(audio_cnn, dev_dual_ds)
+eer, auc_score, optimal_threshold, (fpr, tpr) = evaluate_accuracy(audio_cnn, dev_dual_ds)
 plot_roc_curve(fpr, tpr, auc_score)
 
 # Save and download
@@ -51,7 +51,7 @@ display(FileLink("audio_cnn.keras"))
 
 # On test set
 audio_cnn = keras.saving.load_model("audio_cnn.keras")
-eer, auc_score, optimal_margin, (fpr, tpr) = evaluate_accuracy(audio_cnn, test_dual_ds)
+eer, auc_score, optimal_threshold, (fpr, tpr) = evaluate_accuracy(audio_cnn, test_dual_ds)
 mindcf = calculate_min_dcf(fpr, tpr)
 plot_roc_curve(fpr, tpr, auc_score)
-_ = confusion_analysis(audio_cnn, test_dual_ds, optimal_margin, 1)
+_ = confusion_analysis(audio_cnn, test_dual_ds, optimal_threshold, 1)
