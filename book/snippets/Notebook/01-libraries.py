@@ -9,7 +9,6 @@ import matplotlib.ticker as mtick
 import random
 
 from sklearn.metrics import roc_curve, roc_auc_score
-import gradio as gr
 
 import os
 os.environ["KERAS_BACKEND"] = "torch"
