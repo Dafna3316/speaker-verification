@@ -44,18 +44,18 @@ def predict(name: str, file_a, file_b):
     dist = torch.tensor([])
 
     # Run multiple trials to get different random crops
-    num_trials = 4
+    num_trials = 6
     for i in range(num_trials):
         dist = torch.cat((dist, model_predict(get_model(name), file_a, file_b).reshape((1,))))
     dist = dist.mean()
 
     if dist < margin:
         return f"""
-          ✅ **Same Speaker** (was {dist:.2f} apart)
+          ✅ **Same Speaker** (was {dist:.3f} apart)
         """
     else:
         return f"""
-          ❌ **Different Speaker** (was {dist:.2f} apart)
+          ❌ **Different Speaker** (was {dist:.3f} apart)
         """
 
 model_dropdown = gr.Dropdown(choices=[
@@ -65,11 +65,17 @@ model_dropdown = gr.Dropdown(choices=[
     ("Original 2D CNN on Spectrogram", "spect_2d"),
 ], label="Model")
 
-demo = gr.Interface(fn=predict, inputs=[
-    model_dropdown,
-    gr.Audio(type="filepath", label="First Recording"),
-    gr.Audio(type="filepath", label="Second Recording"),
-], outputs=gr.Markdown())
+demo = gr.Interface(
+    title="Speaker Verification",
+    description="Provide two audio recordings, choose a model and submit to see whether the model thinks that they are the same.",
+    fn=predict,
+    inputs=[
+        model_dropdown,
+        gr.Audio(type="filepath", label="First Recording"),
+        gr.Audio(type="filepath", label="Second Recording"),
+    ],
+    outputs=gr.Markdown()
+)
 
 if __name__ == "__main__":
     demo.launch()
