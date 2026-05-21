@@ -41,7 +41,13 @@ def model_predict(model, file_a, file_b):
 def predict(name: str, file_a, file_b):
     assert name in margins
     margin = margins[name]
-    dist = model_predict(get_model(name), file_a, file_b)
+    dist = torch.tensor([])
+
+    # Run multiple trials to get different random crops
+    num_trials = 4
+    for i in range(num_trials):
+        dist = torch.cat((dist, model_predict(get_model(name), file_a, file_b).reshape((1,))))
+    dist = dist.mean()
 
     if dist < margin:
         return f"""
