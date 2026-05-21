@@ -1,7 +1,8 @@
 numpy
-tensorflow<2.17
-tensorflow-metal<1.2
+tensorflow==2.17.*
+tensorflow-metal==1.1.*; sys_platform == 'darwin'
 matplotlib
 importlib_resources
 ipywidgets
+jupyterlab
 pydub
