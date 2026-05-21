@@ -1,13 +1,6 @@
 numpy
-matplotlib
 importlib_resources
-ipywidgets
-jupyterlab
-pydub
 gradio
-
-# tensorflow==2.17.*
-# tensorflow-metal==1.1.*; sys_platform == 'darwin'
 
 torch==2.11.*
 torchvision==0.26.*
