@@ -60,3 +60,12 @@ def plot_roc_curve(fpr, tpr, roc_auc):
   plt.title("Receiver Operating Characteristic")
   plt.legend(loc="lower right")
   plt.show()
+
+def calculate_min_dcf(fpr, tpr, p_tar=0.01, c_miss=1.0, c_fa=1.0):
+  fnr = 1 - tpr
+  dcf_costs = (c_miss * fnr * p_tar) + (c_fa * fpr * (1 - p_tar))
+  min_dcf = np.min(dcf_costs)
+  c_default = min(c_miss * p_tar, c_fa * (1 - p_tar))
+  mindcf_normalized = min_dcf / c_default
+  print(f"minDCF: {mindcf_normalized:.4f}")
+  return mindcf_normalized

@@ -43,4 +43,5 @@ display(FileLink("mobilenet.keras"))
 # On test set
 mobilenet = keras.saving.load_model("mobilenet.keras")
 eer, auc_score, optimal_margin, (fpr, tpr) = evaluate_accuracy(mobilenet, test_dual_ds)
+mindcf = calculate_min_dcf(fpr, tpr)
 plot_roc_curve(fpr, tpr, auc_score)

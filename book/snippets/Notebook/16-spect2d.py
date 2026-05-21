@@ -48,4 +48,5 @@ display(FileLink("spect_2d.keras"))
 # On test set
 spect_2d = keras.saving.load_model("spect_2d.keras")
 eer, auc_score, optimal_margin, (fpr, tpr) = evaluate_accuracy(spect_2d, test_dual_ds)
+mindcf = calculate_min_dcf(fpr, tpr)
 plot_roc_curve(fpr, tpr, auc_score)

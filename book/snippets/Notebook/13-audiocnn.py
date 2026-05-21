@@ -52,4 +52,5 @@ display(FileLink("audio_cnn.keras"))
 # On test set
 audio_cnn = keras.saving.load_model("audio_cnn.keras")
 eer, auc_score, optimal_margin, (fpr, tpr) = evaluate_accuracy(audio_cnn, test_dual_ds)
+mindcf = calculate_min_dcf(fpr, tpr)
 plot_roc_curve(fpr, tpr, auc_score)
