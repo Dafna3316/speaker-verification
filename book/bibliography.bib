@@ -1,5 +1,5 @@
 @inproceedings{librispeech,
-  title={Librispeech: an asr corpus based on public domain audio books},
+  title={LibriSpeech: an ASR Corpus Based on Public Domain Audio Books},
   author={Panayotov, Vassil and Chen, Guoguo and Povey, Daniel and Khudanpur, Sanjeev},
   langid={english},
   booktitle={2015 IEEE international conference on acoustics, speech and signal processing (ICASSP)},
@@ -9,18 +9,30 @@
   url={https://www.danielpovey.com/files/2015_icassp_librispeech.pdf}
 }
 
-@article{voxceleb,
-  title={Voxceleb: a large-scale speaker identification dataset},
-  author={Nagrani, Arsha and Chung, Joon Son and Zisserman, Andrew},
-  journal={arXiv preprint arXiv:1706.08612},
-  year={2017}
+@inproceedings{voxceleb,
+   title={VoxCeleb: A Large-Scale Speaker Identification Dataset},
+   url={http://dx.doi.org/10.21437/Interspeech.2017-950},
+   DOI={10.21437/interspeech.2017-950},
+   booktitle={Interspeech 2017},
+   publisher={ISCA},
+   author={Nagrani, Arsha and Chung, Joon Son and Zisserman, Andrew},
+   year={2017},
+   month={aug},
+   pages={2616–2620},
+   collection={interspeech_2017}
 }
 
-@article{voxceleb2,
-  title={Voxceleb2: Deep speaker recognition},
-  author={Chung, Joon Son and Nagrani, Arsha and Zisserman, Andrew},
-  journal={arXiv preprint arXiv:1806.05622},
-  year={2018}
+@inproceedings{voxceleb2,
+   title={VoxCeleb2: Deep Speaker Recognition},
+   url={http://dx.doi.org/10.21437/Interspeech.2018-1929},
+   DOI={10.21437/interspeech.2018-1929},
+   booktitle={Interspeech 2018},
+   publisher={ISCA},
+   author={Chung, Joon Son and Nagrani, Arsha and Zisserman, Andrew},
+   year={2018},
+   month={sept},
+   pages={1086–1090},
+   collection={interspeech_2018}
 }
 
 @misc{autodiff,
@@ -31,22 +43,24 @@
 	note = {[Accessed 06-04-2026]},
 }
 
-@inproceedings{mobilenetv2,
-  title={Mobilenetv2: Inverted residuals and linear bottlenecks},
-  author={Sandler, Mark and Howard, Andrew and Zhu, Menglong and Zhmoginov, Andrey and Chen, Liang-Chieh},
-  booktitle={Proceedings of the IEEE conference on computer vision and pattern recognition},
-  pages={4510--4520},
-  year={2018},
-  url={https://arxiv.org/abs/1801.04381}
+@misc{mobilenetv2,
+      title={MobileNetV2: Inverted Residuals and Linear Bottlenecks}, 
+      author={Mark Sandler and Andrew Howard and Menglong Zhu and Andrey Zhmoginov and Liang-Chieh Chen},
+      year={2019},
+      eprint={1801.04381},
+      archivePrefix={arXiv},
+      primaryClass={cs.CV},
+      url={https://arxiv.org/abs/1801.04381}, 
 }
 
-@inproceedings{resnet,
-  title={Deep residual learning for image recognition},
-  author={He, Kaiming and Zhang, Xiangyu and Ren, Shaoqing and Sun, Jian},
-  booktitle={Proceedings of the IEEE conference on computer vision and pattern recognition},
-  pages={770--778},
-  year={2016},
-  url={https://arxiv.org/abs/1512.03385}
+@misc{resnet,
+      title={Deep Residual Learning for Image Recognition}, 
+      author={Kaiming He and Xiangyu Zhang and Shaoqing Ren and Jian Sun},
+      year={2015},
+      eprint={1512.03385},
+      archivePrefix={arXiv},
+      primaryClass={cs.CV},
+      url={https://arxiv.org/abs/1512.03385}, 
 }
 
 @misc{adam,
@@ -81,7 +95,19 @@
   url={https://www.math.ucdavis.edu/~saito/data/roc/fawcett-roc.pdf}
 }
 
-@ARTICLE{cnn,
+@article{cnn,
+  title={Neocognitron: A self-organizing neural network model for a mechanism of pattern recognition unaffected by shift in position},
+  author={Fukushima, Kunihiko},
+  journal={Biological cybernetics},
+  volume={36},
+  number={4},
+  pages={193--202},
+  year={1980},
+  publisher={Springer},
+  doi={10.4249/scholarpedia.1717}
+}
+
+@ARTICLE{relu,
   author={Fukushima, Kunihiko},
   journal={IEEE Transactions on Systems Science and Cybernetics}, 
   title={Visual Feature Extraction by a Multilayered Network of Analog Threshold Elements}, 
@@ -92,10 +118,46 @@
   doi={10.1109/TSSC.1969.300225}
 }
 
-@article{cdet,
-  title={t-DCF: a detection cost function for the tandem assessment of spoofing countermeasures and automatic speaker verification},
-  author={Kinnunen, Tomi and Lee, Kong Aik and Delgado, H{\'e}ctor and Evans, Nicholas and Todisco, Massimiliano and Sahidullah, Md and Yamagishi, Junichi and Reynolds, Douglas A},
-  journal={arXiv preprint arXiv:1804.09618},
-  year={2018},
-  url={https://arxiv.org/abs/1804.09618}
+@misc{cdet,
+      title={t-DCF: a Detection Cost Function for the Tandem Assessment of Spoofing Countermeasures and Automatic Speaker Verification}, 
+      author={Tomi Kinnunen and Kong Aik Lee and Hector Delgado and Nicholas Evans and Massimiliano Todisco and Md Sahidullah and Junichi Yamagishi and Douglas A. Reynolds},
+      year={2019},
+      eprint={1804.09618},
+      archivePrefix={arXiv},
+      primaryClass={eess.AS},
+      url={https://arxiv.org/abs/1804.09618}, 
+}
+
+@INPROCEEDINGS{facenet,
+  author={Schroff, Florian and Kalenichenko, Dmitry and Philbin, James},
+  booktitle={2015 IEEE Conference on Computer Vision and Pattern Recognition (CVPR)}, 
+  title={FaceNet: A unified embedding for face recognition and clustering}, 
+  year={2015},
+  pages={815-823},
+  keywords={Face;Face recognition;Training;Accuracy;Artificial neural networks;Standards;Principal component analysis},
+  doi={10.1109/CVPR.2015.7298682}
+}
+
+@book{mel,
+  title={Speech Communication: Human and Machine},
+  author={O'Shaughnessy, D.},
+  isbn={9780201165203},
+  lccn={86022175},
+  series={Addison-Wesley series in electrical engineering},
+  url={https://books.google.co.il/books?id=mHFQAAAAMAAJ},
+  year={1987},
+  publisher={Addison-Wesley Publishing Company}
+}
+
+@ARTICLE{nyquistshannon,
+  author={Shannon, C.E.},
+  journal={Proceedings of the IRE}, 
+  title={Communication in the Presence of Noise}, 
+  year={1949},
+  volume={37},
+  number={1},
+  pages={10-21},
+  keywords={Electron tubes;Voltage;Bandwidth;Circuits;Shape;Klystrons;Frequency measurement;Gain measurement;Communication systems;Telephony},
+  doi={10.1109/JRPROC.1949.232969},
+  url={https://web.archive.org/web/20100208112344/http://www.stanford.edu/class/ee104/shannonpaper.pdf}
 }
