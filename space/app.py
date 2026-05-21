@@ -34,7 +34,7 @@ def model_predict(model, file_a, file_b):
     emb_a = model(audio_a, training=False).squeeze()
     emb_b = model(audio_b, training=False).squeeze()
 
-    dist = ops.sqrt(ops.sum(ops.square(embedding_a - embedding_b)))
+    dist = ops.sqrt(ops.sum(ops.square(emb_a - emb_b)))
 
     return dist
 
