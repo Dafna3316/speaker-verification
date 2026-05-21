@@ -9,7 +9,7 @@ class LogMelSpectrogram(layers.Layer):
     mel_weights = torchaudio.functional.melscale_fbanks(
       n_freqs=self.fft_size // 2 + 1,
       f_min=20.0,
-      f_max=7600.0,
+      f_max=self.sample_rate / 2, # Nyquist-Shannon
       n_mels=self.num_mel_bins,
       sample_rate=self.sample_rate,
       norm="slaney",

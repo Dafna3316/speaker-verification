@@ -98,6 +98,9 @@ extras sectioning tabular, provide={onchar=ids fonts, alph=letters.plain, Alph=l
 \RenewDocumentCommand\inputminted{o m m}{\begin{otherlanguage}{english}\oldinputminted[\IfNoValueF{#1}{#1}]{#2}{#3}\end{otherlanguage}}
 
 %% Definitions
+\theoremstyle{plain}
+\newtheorem{theorem}{\theoremname}[section]
+
 \theoremstyle{definition}
 \newtheorem{definition}{\definitionname}[section]
 
@@ -877,6 +880,23 @@ Direct cosine transform. הוא מייצג מאפיינים שונים של הא
 למה שבני אדם מבינים. ספקטרוגרמה היא תצוגה יחסית אינטואיטיבית של קול,
 ולכן זה התאים למשימה.
 
+\subsubsection{בעיית ה-Aliasing}
+\label{sec:frequency-limits}
+
+אם באות מסוים קיימים רכיבים בתדר הגדול מחצי קצב הדגימה (תדר ניקוויסט
+של הדוגם), הם יופיעו כתדרים נמוכים באות הדגום. משפט נייקוויסט-שאנון
+מבטיח שדוגם בקצב מסוים יכול לייצג באופן מושלם פונקציות שאין להן רכיבים
+בתדרים גבוהים.
+
+\begin{theorem}[נייקוויסט-שאנון]
+  אם פונקציה $f(x)$ לא מכילה אות בתדר גדול מ-$B [\unit{\Hz}]$, אז ניתן
+  לקבוע אותה לחלוטין על־ידי דגימתה בכל~קצב דגימה גדול מ-$2B$.
+\end{theorem}
+
+על־מנת להתמודד עם הבעייה הזו, נהוג להיפטר מכל התדרים הגבוהים לפני
+הדגימה (בעזרת מסנן מעביר נמוכים), ובכל מקרה, תדרים כאלה (מעל חצי מקצב
+הדגימה) לא יופיעו באות הדגום ולכן אין טעם להתייחס אליהם בספקטרוגרמה.
+
 \section{כלים וסביבת פיתוח}
 \label{sec:environment}
 
@@ -910,7 +930,9 @@ M4, שיש לו GPU מובנה שיודע לעבוד עם PyTorch. עריכת ה
 
 לניהול גרסאות השתמשתי ב-Git וניתן למצוא את הקוד המלא של הפרויקט בקישור
 \url{https://github.com/Dafna3316/speaker-identification}, כולל קוד
-ה-{\LaTeX} של הספר הזה (אבל בלי התמונות).
+ה-{\LaTeX} של
+\href{https://github.com/Dafna3316/speaker-identification/blob/main/book/Book.tex}{הספר
+  הזה} (אבל בלי התמונות).
 
 במקור הפרויקט מומש ב-Tensorflow, אבל עבר ל-PyTorch מאחר ש-Tensorflow
 לא יודעת לקרוא קבצים בפורמט FLAC (ראו \autoref{sec:dataset}) והמרה
@@ -927,9 +949,9 @@ M4, שיש לו GPU מובנה שיודע לעבוד עם PyTorch. עריכת ה
 
 הפרויקט~הזה משתמש במערך הנתונים LibriSpeech, שמבוסס על פרויקט LibriVox
 להקלטת ספרים בנחלת הכלל (\enpcite{librispeech}). מדובר באוסף של הקלטות
-(קבצי FLAC), כל אחת משפט או שניים, ולכל אחת מוצמד דובר, ספר, פרק ותוכן
-ההקלטה (יכול להיות שימושי למטרות transcription). עבור הפרויקט הזה, רק
-הדובר רלוונטי.
+(קבצי FLAC בקצב דגימה $\SI{16000}{\Hz}$), כל אחת משפט או שניים, ולכל
+אחת מוצמד דובר, ספר, פרק ותוכן ההקלטה (יכול להיות שימושי למטרות
+transcription). עבור הפרויקט הזה, רק הדובר רלוונטי.
 
 הנתונים כבר מחולקים מראש ל-\textenglish{train}, \textenglish{dev}
 ו-\textenglish{test}, כך שבכל חלוקה הקלטות של דוברים \emph{שונים} (אין
@@ -1134,6 +1156,27 @@ $\SI{347.59}{\mebi\byte}$ וה-test הוא $\SI{355.36}{\mebi\byte}$. מכאן
 
 \section{אימון}
 \label{sec:training}
+
+כל המודלים אומנו בעזרת Adam (ראו \autoref{sec:optimization-adam}) עם
+שיעור למידה $\num{0.001}$ (או $\num{1e-3}$) למשך $\num{30}$ אפוקים לכל
+היותר. בגרסאות קודמות של הפרויקט, עם ארכיטקטורה שונה או אוגמנטציות
+שונות, שיעורי למידה גדולים יותר או קטנים יותר עבדו יותר טוב, אבל עבור
+הארכיטקטורה הנוכחית (\autoref{sec:architecture}) שיעור למידה הזה הניב
+את התוצאות הכי טובות בכל~המודלים.
+
+גודל המקבץ (batch size) נבחר משיקולים פרקטיים, של זיכרון וזמן. מקבצים
+מעל $\num{32}$ לקחו יותר מדי זמן באימון, ולכן כל המודלים אומנו בגודל
+מקבץ $\num{32}$. כל המודלים השתמשו ב-early stopping, בעזרת המחלקה
+המובנית של Keras.
+
+\begin{listing}[htbp]
+\inputminted[mathescape]{python}{snippets/Training.py}
+\caption{אימון אחד המודלים}
+\label{lst:training}
+\end{listing}
+
+הפרמטר $m$ עבור הפסד שלישיות (\autoref{sec:triplet-loss}) הוא $0.2$
+לכל המודלים.
 
 \begin{itemize}
 \item \textbf{היפר-פרמטרים:} Learning Rate, Batch Size, מספר Epochs, Optimizer
