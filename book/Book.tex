@@ -1184,6 +1184,48 @@ $\SI{347.59}{\mebi\byte}$ וה-test הוא $\SI{355.36}{\mebi\byte}$. מכאן
 הפרמטר $m$ עבור הפסד שלישיות (\autoref{sec:triplet-loss}) הוא $0.2$
 לכל המודלים.
 
+\subsection{המודל החד־ממדי על אודיו גולמי}
+\label{sec:training-audiocnn}
+
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=0.5\textwidth]{images/audio_cnn-loss.png}
+  \caption{פונקציית ההפסד לאורך האימון עבור המודל החד-ממדי על אודיו גולמי (\autoref{sec:architecture-audiocnn})}
+  \label{fig:audiocnn-loss}
+\end{figure}
+
+ניתן לראות ב\autoref{fig:audiocnn-loss} שהמודל אומן לכל $30$ האפוקים,
+ונראה שהוא בדרך להתכנס. יש מידה מסוימת של Overfitting, ונראה שעדיף היה
+לאמן על יותר נתונים (כלומר יותר דוברים שונים) וליותר אפוקים. בסך הכול
+האימון לקח כמעט $21$ שעות, ובממוצע כמעט $42$ דקות לאפוק.
+
+\subsection{המודל החד־ממדי על ספקטרוגרמה}
+\label{sec:training-spect1d}
+
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=0.5\textwidth]{images/spect_1d-loss.png}
+  \caption{פונקציית ההפסד לאורך האימון עבור המודל החד-ממדי על ספקטרוגרמה}
+  \label{fig:spect1d-loss}
+\end{figure}
+
+כמו במודל על האודיו הגולמי, גם המודל הזה אומן לכל $30$ האפוקים
+(\autoref{fig:spect1d-loss}). ההפסד הכי טוב שלו על ה-train set גבוה
+יותר מהמודל הגולמי, אבל ההפסד הכי טוב שלו על ה-dev set נמוך יותר. בסך
+הכול האימון לקח מעט יותר מארבע שעות, בממוצע טיפה יותר מ-$8$ דקות
+לאפוק.
+
+\subsection{המודלים הדו־ממדיים על ספקטרוגרמה}
+\label{sec:training-2d}
+
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=0.4\textwidth]{images/mobilenet-loss.png}
+  \includegraphics[width=0.4\textwidth]{images/spect_2d-loss.png}
+  \caption{פונקציית ההפסד עבור המודלים הדו-ממדיים לאורך האימון; ימין: MobileNet}
+  \label{fig:2d-loss}
+\end{figure}
+
 \begin{itemize}
 \item \textbf{היפר-פרמטרים:} Learning Rate, Batch Size, מספר Epochs, Optimizer
 \item \textbf{גרפי אימון:} Loss ו-Accuracy (או מדד אחר) לאורך ה-Epochs, עבור Train ו-Validation
