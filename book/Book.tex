@@ -9,7 +9,7 @@
 \usepackage{siunitx}
 
 \usepackage{minted}
-\setminted{fontsize=\footnotesize}
+\setminted{fontsize=\footnotesize, stripnl}
 \usepackage[hebrew, bidi=basic, layout=lists footnotes captions
 extras sectioning tabular, provide={onchar=ids fonts, alph=letters.plain, Alph=letters}]{babel}
 \usepackage{csquotes}
@@ -138,6 +138,10 @@ extras sectioning tabular, provide={onchar=ids fonts, alph=letters.plain, Alph=l
 \andautoref{hebrew}{equation}{משוואה}
 \andautoref{hebrew}{listing}{קטע~קוד}
 
+\andautoref{english}{theorem}{Theorem}
+\andautoref{english}{definition}{Definition}
+\andautoref{english}{listing}{Listing}
+
 \setlocalecaption{hebrew}{listlisting}{רשימת קטעי הקוד}
 
 \renewcommand\listingscaption{\listingname}
@@ -205,7 +209,9 @@ extras sectioning tabular, provide={onchar=ids fonts, alph=letters.plain, Alph=l
 
 בפרויקט~הזה לא ממומש רק מודל~אחד, אלא ארבעה (בשלוש~ארכיטקטורות שונות).
 אבל כולם הם~מודלי קונבולוציה, שכן הקלטת קול, כמו תמונה, היא~בעלת מבנה
-מרחבי וקונבולוציה היא~כלי מצוין לשמור על~המבנה המרחבי של~הקלט.
+מרחבי וקונבולוציה היא~כלי מצוין לשמור על~המבנה המרחבי של~הקלט. אחת
+ממטרות הפרויקט היא להשוות בין הארכיטקטורות השונות ולראות איזו מהן הכי
+מתאימה למשימה.
 
 כל המודלים אומנו באותה גישה, של למידה ניגודית (contrastive learning)
 באמצעות triplet loss. זו השיטה שעבדה הכי טוב בניסיונות, ומגיעה להישגים
@@ -888,7 +894,7 @@ Direct cosine transform. הוא מייצג מאפיינים שונים של הא
 מבטיח שדוגם בקצב מסוים יכול לייצג באופן מושלם פונקציות שאין להן רכיבים
 בתדרים גבוהים.
 
-\begin{theorem}[נייקוויסט-שאנון]
+\begin{theorem}[נייקוויסט-שאנון]\label{thm:nyquist-shannon}
   אם פונקציה $f(x)$ לא מכילה אות בתדר גדול מ-$B [\unit{\Hz}]$, אז ניתן
   לקבוע אותה לחלוטין על־ידי דגימתה בכל~קצב דגימה גדול מ-$2B$.
 \end{theorem}
@@ -1252,7 +1258,7 @@ $\SI{347.59}{\mebi\byte}$ וה-test הוא $\SI{355.36}{\mebi\byte}$. מכאן
 \subsubsection{בניית ספקטרוגרמות Mel (חלק מהפונקציות הושמטו)}
 \label{sec:code-mel-spectrogram}
 
-\inputminted{python}{snippets/LogMelSpectrogram.py}
+\inputminted[texcomments]{python}{snippets/LogMelSpectrogram.py}
 
 \subsection{מודלים}
 \label{sec:code-models}

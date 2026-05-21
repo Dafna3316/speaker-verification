@@ -5,7 +5,8 @@ class TripletLoss(keras.Loss):
 
   def call(self, y_true, y_pred):
     # y_true is always 0,
-    # y_pred is (anchor, positive, negative)
+    # y_pred is (batch_size, 3, ...), i.e. triplet elements stored in
+    # axis 1.
 
     anchor = y_pred[:, 0, :]
     positive = y_pred[:, 1, :]
