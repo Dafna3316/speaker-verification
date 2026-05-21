@@ -1,9 +1,9 @@
 \documentclass[hebrew, a4paper]{article}
 
-\usepackage{amsmath, amssymb, amsfonts, amsopn, amsthm}
+\usepackage{amsmath, amsthm}
 \usepackage{fancyhdr}
 \usepackage{graphicx}
-\usepackage{tikz, pgfplots}
+\usepackage{tikz}
 \usepackage{xcolor}
 \usepackage{mathtools, unicode-math, lualatex-math}
 \usepackage{siunitx}
@@ -81,7 +81,6 @@ backend=biber]{biblatex}
 \fancyfoot[C]{\thepage}
 
 \usetikzlibrary{calc}
-\pgfplotsset{compat=1.18}
 
 \newcommand\downloadfile[2]{%
   \IfFileExists{#1}{}{\directlua{
@@ -140,7 +139,7 @@ backend=biber]{biblatex}
 \setlocalecaption{hebrew}{figureautoref}{איור}
 \setlocalecaption{hebrew}{tableautoref}{טבלה}
 \setlocalecaption{hebrew}{sectionautoref}{פרק}
-\setlocalecaption{hebrew}{subsectionautoref}{תת־פרק}
+\setlocalecaption{hebrew}{subsectionautoref}{סעיף}
 \setlocalecaption{hebrew}{subsubsectionautoref}{סעיף}
 \setlocalecaption{hebrew}{appendixautoref}{נספח}
 \setlocalecaption{hebrew}{onpage}{בעמוד}
@@ -688,6 +687,23 @@ $\max\set{(m-\norm{a-b})^2,0}$, ובשביל למזער אותו יש להרחי
 מגיע בדרך כלל לתוצאות טובות יותר. לכן כל המודלים בפרויקט הזה משתמשים
 בהפסד שלישיות.
 
+\paragraph{בחירת השלישיות}
+
+מספר השלישיות האפשרי עובר מערך הנתונים הוא עצום, ועדיף לאמן את הרשת רק
+על השלישיות שהכי יעזרו לה. במימוש המקורי של הפסד שלישיות
+\enpcite{facenet}, שלישיות נבחרו מחדש במהלך האימון אחרי כל מעבר על
+הנתונים לפי כלל המכונה semi-hard negatives: בוחרים את כל הזוגות
+החיוביים האפשריים, ומצרפים נתונים שליליים שמפרים את כלל ההפסד (כלומר,
+ערכם ב\autoref{eq:triplet-loss} הוא חיובי), אבל לא מפרים אותו
+\emph{מדי}, כלומר
+\begin{equation}
+  \label{eq:triplet-semi-hard}
+  \norm{a-p}^2 < \norm{a-n}^2
+\end{equation}
+אפשר לבחור את השלישיות על כל מקבץ או אחרי כל מספר מעברים קבוע מראש על
+כלל המקבצים. הטכניקות האלה נקראות בהתאמה online semi-hard negative
+mining ו-offline semi-hard negative mining.
+
 \subsubsection{מדדי הצלחה}
 \label{sec:contrastive-metrics}
 
@@ -1016,9 +1032,10 @@ $\SI{347.59}{\mebi\byte}$ וה-test הוא $\SI{355.36}{\mebi\byte}$. מכאן
 \end{listing}
 
 לכל זוג כזה, נבחר דובר אחר אקראי והקלטה אקראית מתוך אותו דובר, וכך
-הזוג הופך לשלישייה שמתאימה ל-triplet loss. ההגבלה על מספר השלישיות היא
-מסיבות פרקטיות של חוסר בזמן ובזיכרון, וההגבלה הזו היא כנראה אחד
-מהגורמים להתאמת־היתר שניתן לראות בהמשך (\autoref{sec:discussion}).
+הזוג הופך לשלישייה שמתאימה ל-triplet loss. ההגבלה על~מספר השלישיות היא
+מסיבות פרקטיות של חוסר בזמן ובזיכרון. כל~השלישיות מיוצרות מראש,
+והפרויקט לא משתמש בטכניקות semi-hard negative mining
+(\autoref{sec:triplet-loss}).
 
 החלוקה לזוגות חיוביים ושליליים בשביל מדדי ההצלחה
 (\autoref{sec:contrastive-metrics}) מתבצעת באופן כמעט זהה, בנוסף לזוג
@@ -1540,8 +1557,9 @@ VoxCeleb2 הוא מערך נתונים נפרד לחלוטין, בעל אופי 
 על־ידי אימון ליותר אפוקים (יותר זמן), על הקלטות ארוכות יותר עם גודל
 מקבץ גדול יותר (יותר זיכרון), מערך נתונים גדול יותר, ואף לשלב מערכי
 נתונים נוספים כגון VoxCeleb ו-VoxCeleb2, ולכלול הקלטות שאינן נקיות
-לגמרי מרעש. כמו~כן, אימון מראש לסיווג לפני הלמידה הניגודית עשוי לשפר
-את~התוצאות.
+לגמרי מרעש. כמו~כן, אימון מראש לסיווג לפני הלמידה הניגודית, ובעיקר
+שימוש בטכניקות חכמות יותר לבחירת שלישיות (\autoref{sec:triplet-loss}),
+עשויים לשפר את~התוצאות.
 
 \subsection{מגבלות}
 \label{sec:limitations}
