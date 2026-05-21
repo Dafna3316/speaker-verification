@@ -94,6 +94,9 @@ extras sectioning tabular, provide={onchar=ids fonts, alph=letters.plain, Alph=l
 \NewDocumentCommand\enpcite{m}{\textenglish{\parencite{#1}}}
 \NewDocumentCommand\entcite{m}{\textenglish{\textcite{#1}}}
 
+\let\oldinputminted\inputminted
+\RenewDocumentCommand\inputminted{o m m}{\begin{otherlanguage}{english}\oldinputminted[\IfNoValueF{#1}{#1}]{#2}{#3}\end{otherlanguage}}
+
 %% Definitions
 \theoremstyle{definition}
 \newtheorem{definition}{\definitionname}[section]
@@ -115,6 +118,11 @@ extras sectioning tabular, provide={onchar=ids fonts, alph=letters.plain, Alph=l
 \DeclareMathOperator*\argmax{arg\,max}
 \DeclareMathOperator*\argmin{arg\,min}
 
+\newcommand\andautoref[3]{%
+  \setlocalecaption{#1}{#2}{#3}%
+  \setlocalecaption{#1}{#2autoref}{#3}%
+}
+
 \setlocalecaption{hebrew}{figureautoref}{איור}
 \setlocalecaption{hebrew}{tableautoref}{טבלה}
 \setlocalecaption{hebrew}{sectionautoref}{פרק}
@@ -122,14 +130,11 @@ extras sectioning tabular, provide={onchar=ids fonts, alph=letters.plain, Alph=l
 \setlocalecaption{hebrew}{subsubsectionautoref}{סעיף}
 \setlocalecaption{hebrew}{appendixautoref}{נספח}
 
-\setlocalecaption{hebrew}{definition}{הגדרה}
-\setlocalecaption{hebrew}{definitionautoref}{הגדרה}
+\andautoref{hebrew}{theorem}{משפט}
+\andautoref{hebrew}{definition}{הגדרה}
+\andautoref{hebrew}{equation}{משוואה}
+\andautoref{hebrew}{listing}{קטע~קוד}
 
-\setlocalecaption{hebrew}{equation}{משוואה}
-\setlocalecaption{hebrew}{equationautoref}{משוואה}
-
-\setlocalecaption{hebrew}{listing}{קטע~קוד}
-\setlocalecaption{hebrew}{listingautoref}{קטע~קוד}
 \setlocalecaption{hebrew}{listlisting}{רשימת קטעי הקוד}
 
 \renewcommand\listingscaption{\listingname}
@@ -632,9 +637,7 @@ $\max\set{(m-\norm{a-b})^2,0}$, ובשביל למזער אותו יש להרחי
 ה-anchor ל-positive ולהרחיק ממנו את ה-negative.
 
 \begin{listing}
-  \begin{otherlanguage}{english}
-    \inputminted{python}{snippets/TripletLoss.py}
-  \end{otherlanguage}
+  \inputminted{python}{snippets/TripletLoss.py}
   \caption{הפסד שלישיות (\autoref{eq:triplet-loss}). חלק מהפונקציות הושמטו.}
   \label{lst:triplet-loss}
 \end{listing}
@@ -941,9 +944,7 @@ $\SI{347.59}{\mebi\byte}$ וה-test הוא $\SI{355.36}{\mebi\byte}$. מכאן
 לדובר, אבל ה-dev וה-test אינם מוגבלים.
 
 \begin{listing}[hbtp]
-  \begin{otherlanguage}{english}
-    \inputminted{python}{snippets/TripletDataset.py}
-  \end{otherlanguage}
+  \inputminted{python}{snippets/TripletDataset.py}
   \caption{בחירת השלישיות עבור triplet loss}
   \label{lst:triplet-dataset}
 \end{listing}
@@ -1195,16 +1196,12 @@ $\SI{347.59}{\mebi\byte}$ וה-test הוא $\SI{355.36}{\mebi\byte}$. מכאן
 \subsubsection{קריאת נתוני השמע (חלק מהפונקציות הושמטו)}
 \label{sec:code-triple-audio-dataset}
 
-\begin{otherlanguage}{english}
-  \inputminted{python}{snippets/TripleAudioDataset.py}
-\end{otherlanguage}
+\inputminted{python}{snippets/TripleAudioDataset.py}
 
 \subsubsection{בניית ספקטרוגרמות Mel (חלק מהפונקציות הושמטו)}
 \label{sec:code-mel-spectrogram}
 
-\begin{otherlanguage}{english}
-  \inputminted{python}{snippets/LogMelSpectrogram.py}
-\end{otherlanguage}
+\inputminted{python}{snippets/LogMelSpectrogram.py}
 
 \subsection{מודלים}
 \label{sec:code-models}
