@@ -6,3 +6,4 @@ importlib_resources
 ipywidgets
 jupyterlab
 pydub
+gradio
